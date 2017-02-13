@@ -1,9 +1,10 @@
 var circles = new Array(0);
 var currEn = new Array(0);
 var counter = 0;
-var colNum = 0;
-var color1 = "#000000"
-var color2 = "#ffffff";
+var colR = 0;
+var colG = 0;
+var colB = 0;
+var smoove = true;
 
 function Ball(x, y, d, mx, my) {
     this.x = x;
@@ -13,17 +14,17 @@ function Ball(x, y, d, mx, my) {
     this.d = d;
     
     this.display = function(){
-        fill(color2);
+        fill(255-colR, 255-colG, 255-colB);
         ellipse(this.x, this.y, this.d, this.d);
     }
     
     this.update = function() {
         this.x += this.mx;
         this.y += this.my;
-        if ((this.x>=windowWidth-(this.d/2) && this.mx > 0) || (this.x<=this.d/2 && this.mx < 0)) {
+        if ((this.x+this.mx)>=(windowWidth-(this.d/2)) || ((this.x+this.mx)<=(this.d/2))) {
             this.mx *= -1;
         }
-        if ((this.y>=windowHeight-(this.d/2) && this.my > 0) || (this.y<=this.d/2 && this.my < 0)) {
+        if ((this.y+this.my)>=(windowHeight-(this.d/2)) || ((this.y+this.my)<=(this.d/2))) {
             this.my *= -1;
         }
         if(this.y > windowHeight- (this.d/2 + 1)){
@@ -52,7 +53,7 @@ function Energy(x, y) {
     
     this.display = function(){
         if(this.active){
-        fill(color2);
+        fill(255-colR, 255-colG, 255-colB);
         ellipse(this.x, this.y, this.d, this.d);
         }
     }
@@ -79,14 +80,22 @@ function Energy(x, y) {
 function setup() {
     createCanvas(windowWidth, windowHeight);
     noStroke();
+    textSize(40);
 }
 
 function draw() {
     if(counter%80 == 0){
-        colNum = Math.floor(Math.random()*16777215);
-        color1 = '#' + colNum.toString(16);
-        color2 = '#' + (16777215 - colNum).toString(16);
-    background(color1)
+        colR = random(255);
+        colG = random(255);
+        colB = random(255);
+    }
+    if(smoove){
+    background(colR, colG, colB, 20);
+    }
+    else {
+        if(counter%80 == 0) {
+            background(colR, colG, colB);
+        }
     }
     for(var i=0; i<circles.length; i++){
         circles[i].update();
@@ -96,11 +105,24 @@ function draw() {
         currEn[i].update();
         currEn[i].display();
     }
+    fill(255, 255, 255);
+    if(smoove) {
+        text("fade", 10, 40);
+    }
+    else{
+        text("solid", 10, 40);
+    }
 counter++;
 }
 function mousePressed() {
     for(var i=0; i<circles.length; i++){
         circles[i].poke();
+    }
+    if(dist(mouseX, mouseY, 50, 30)< 50) {
+        smoove = !smoove;
+        if(!smoove) {
+            counter += (78 - counter%80);
+        }
     }
     currEn.push(new Energy(mouseX, mouseY));
 }

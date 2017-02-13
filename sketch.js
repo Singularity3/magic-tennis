@@ -20,10 +20,10 @@ function Ball(x, y, d, mx, my) {
     this.update = function() {
         this.x += this.mx;
         this.y += this.my;
-        if (this.x>=windowWidth-(this.d/2) || this.x<=this.d/2) {
+        if ((this.x>=windowWidth-(this.d/2) && this.mx > 0) || (this.x<=this.d/2 && this.mx < 0)) {
             this.mx *= -1;
         }
-        if (this.y>=windowHeight-(this.d/2) || this.y<=this.d/2) {
+        if ((this.y>=windowHeight-(this.d/2) && this.my > 0) || (this.y<=this.d/2 && this.my < 0)) {
             this.my *= -1;
         }
         if(this.y > windowHeight- (this.d/2 + 1)){
